@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e1118">
+<title>EV Tracker</title>
+<style>
+:root{
+  --bg:#0e1118; --s1:#181c28; --s2:#1f2336;
+  --border:rgba(255,255,255,0.08);
+  --text:#dde1f0; --text2:#7a7f99; --text3:#3e4259;
+  --accent:#4f8ef7;
+  --hp:#e05555; --atk:#f5924e; --def:#d4b83a;
+  --spa:#5b9bf5; --spd:#5bcf8a; --spe:#d96bcf;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:100%;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  display:flex;flex-direction:column;min-height:100%;
+}
+
+/* ── CONTROLS ── */
+.controls{
+  position:sticky;top:0;z-index:20;
+  background:var(--s1);
+  border-bottom:1px solid var(--border);
+  padding:10px 12px;
+  display:flex;flex-direction:column;gap:7px;
+}
+.stat-row{display:flex;gap:5px;}
+.stat-btn{
+  flex:1;padding:9px 2px;border-radius:9px;border:2px solid transparent;
+  background:var(--s2);color:var(--text2);
+  font-size:11px;font-weight:700;letter-spacing:.3px;
+  cursor:pointer;touch-action:manipulation;transition:all .12s;
+}
+.stat-btn[data-s="hp"].sel  {background:var(--hp);  border-color:var(--hp);  color:#fff;}
+.stat-btn[data-s="atk"].sel {background:var(--atk); border-color:var(--atk); color:#fff;}
+.stat-btn[data-s="def"].sel {background:var(--def); border-color:var(--def); color:#1a1600;}
+.stat-btn[data-s="spa"].sel {background:var(--spa); border-color:var(--spa); color:#fff;}
+.stat-btn[data-s="spd"].sel {background:var(--spd); border-color:var(--spd); color:#0a2010;}
+.stat-btn[data-s="spe"].sel {background:var(--spe); border-color:var(--spe); color:#fff;}
+.inc-row{display:flex;gap:5px;}
+.inc-btn{
+  flex:1;padding:9px 2px;border-radius:9px;
+  background:var(--s2);border:2px solid transparent;
+  color:var(--text2);font-size:14px;font-weight:700;
+  cursor:pointer;touch-action:manipulation;transition:all .12s;
+}
+.inc-btn.sel{border-color:var(--accent);color:var(--text);}
+.inc-custom{
+  flex:1.6;padding:9px 6px;border-radius:9px;
+  background:var(--s2);border:2px solid transparent;
+  color:var(--text);font-size:13px;font-weight:700;
+  text-align:center;outline:none;font-family:inherit;
+  -webkit-appearance:none;
+}
+.inc-custom:focus{border-color:var(--accent);}
+.inc-custom::placeholder{color:var(--text3);font-size:11px;font-weight:400;}
+.big-row{display:flex;gap:8px;}
+.big-btn{
+  flex:1;border:none;border-radius:12px;
+  font-size:44px;font-weight:300;
+  cursor:pointer;touch-action:manipulation;
+  transition:transform .08s;
+  line-height:1;padding:28px 0;
+}
+.big-btn:active{transform:scale(0.94);}
+.big-plus{background:#c0392b;color:#fff;}
+.big-minus{background:var(--s2);color:var(--text2);}
+.hint{font-size:11px;color:var(--text3);text-align:center;}
+.hint b{color:var(--accent);font-weight:500;}
+
+/* ── POKEMON LIST ── */
+.poke-list{display:flex;flex-direction:column;gap:8px;padding:10px 12px 36px;}
+.poke-card{
+  background:var(--s1);border:2px solid var(--border);
+  border-radius:12px;padding:11px 13px;
+  cursor:pointer;touch-action:manipulation;
+  transition:border-color .15s,box-shadow .15s;user-select:none;
+}
+.poke-card.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,0.15);}
+.poke-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.sel-dot{
+  width:18px;height:18px;flex-shrink:0;
+  border:2px solid var(--text3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .12s;
+}
+.poke-card.sel .sel-dot{background:var(--accent);border-color:var(--accent);}
+.sel-dot::after{content:'';display:block;width:7px;height:7px;border-radius:50%;background:#fff;opacity:0;transition:opacity .12s;}
+.poke-card.sel .sel-dot::after{opacity:1;}
+.poke-name{
+  flex:1;background:transparent;border:none;
+  border-bottom:1px solid transparent;
+  color:var(--text);font-size:14px;font-weight:600;
+  outline:none;font-family:inherit;padding:1px 2px;
+}
+.poke-name:focus{border-bottom-color:var(--accent);}
+.ev-badge{font-size:11px;color:var(--text3);flex-shrink:0;letter-spacing:.3px;}
+.ev-badge.warn{color:var(--atk);}
+.ev-badge.full{color:var(--spe);}
+
+/* card action buttons — wider */
+.card-btns{display:flex;gap:5px;}
+.card-btn{
+  background:var(--s2);border:1px solid var(--border);
+  color:var(--text2);border-radius:7px;
+  font-size:13px;cursor:pointer;
+  padding:5px 12px;
+  touch-action:manipulation;line-height:1;
+  font-family:inherit;font-weight:600;
+  transition:all .15s;white-space:nowrap;
+}
+/* normal state */
+.card-btn.rst{color:var(--text2);}
+.card-btn.del{color:var(--text2);}
+
+/* confirming state */
+.card-btn.confirming-rst{
+  background:rgba(79,142,247,0.15);
+  border-color:var(--accent);
+  color:var(--accent);
+  animation:pulse-border 0.8s ease infinite;
+}
+.card-btn.confirming-del{
+  background:rgba(224,85,85,0.15);
+  border-color:var(--hp);
+  color:var(--hp);
+  animation:pulse-border 0.8s ease infinite;
+}
+@keyframes pulse-border{
+  0%,100%{opacity:1;}
+  50%{opacity:0.7;}
+}
+
+/* mini stats */
+.mini-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
+.mstat{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.mstat-lbl{font-size:9px;font-weight:700;letter-spacing:.3px;}
+.mstat-val{font-size:15px;font-weight:700;line-height:1;}
+.mstat-bar{width:100%;height:4px;background:var(--s2);border-radius:2px;overflow:hidden;}
+.mstat-fill{height:100%;border-radius:2px;transition:width .2s;}
+.mstat:not(.active){opacity:.5;}
+
+.add-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px;border-radius:12px;
+  border:2px dashed var(--border);background:none;
+  color:var(--text3);font-size:14px;cursor:pointer;
+  touch-action:manipulation;font-family:inherit;transition:all .12s;
+}
+.add-btn:active{border-color:var(--accent);color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="stat-row">
+    <button class="stat-btn sel" data-s="hp">HP</button>
+    <button class="stat-btn" data-s="atk">ATK</button>
+    <button class="stat-btn" data-s="def">DEF</button>
+    <button class="stat-btn" data-s="spa">SpA</button>
+    <button class="stat-btn" data-s="spd">SpD</button>
+    <button class="stat-btn" data-s="spe">SPE</button>
+  </div>
+  <div class="inc-row">
+    <button class="inc-btn sel" data-inc="1">1</button>
+    <button class="inc-btn" data-inc="2">2</button>
+    <button class="inc-btn" data-inc="3">3</button>
+    <button class="inc-btn" data-inc="5">5</button>
+    <button class="inc-btn" data-inc="10">10</button>
+    <input class="inc-custom" id="inc-custom" type="number" min="1" max="252" placeholder="自訂">
+  </div>
+  <div class="big-row">
+    <button class="big-btn big-plus" id="btn-plus">+</button>
+    <button class="big-btn big-minus" id="btn-minus">−</button>
+  </div>
+  <div class="hint" id="hint">點卡片選取寶可夢，再按 + / −</div>
+</div>
+
+<div class="poke-list" id="poke-list"></div>
+
+<script>
+const STATS=['hp','atk','def','spa','spd','spe'];
+const LABEL={hp:'HP',atk:'ATK',def:'DEF',spa:'SpA',spd:'SpD',spe:'SPE'};
+const COLORS={hp:'var(--hp)',atk:'var(--atk)',def:'var(--def)',spa:'var(--spa)',spd:'var(--spd)',spe:'var(--spe)'};
+const MAX_STAT=252,MAX_TOT=510,LS='pkev5';
+let nextId=0,state=[],selected=new Set();
+let activeStat='hp',activeInc=1;
+
+// confirm state per card: {id -> {action:'rst'|'del', timer, countdown}}
+const confirmState={};
+
+function save(){localStorage.setItem(LS,JSON.stringify({nextId,state}));}
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(LS)||'null');
+    if(d&&d.state&&d.state.length){nextId=d.nextId||0;state=d.state;return;}
+  }catch(e){}
+  addPoke(false);
+}
+function tot(p){return STATS.reduce((a,s)=>a+p.ev[s],0);}
+function addPoke(doSave=true){
+  const p={id:nextId++,name:'寶可夢',ev:{hp:0,atk:0,def:0,spa:0,spd:0,spe:0}};
+  state.push(p);if(doSave){save();render();}return p;
+}
+function removePoke(id){
+  if(state.length<=1)return;
+  cancelConfirm(id);
+  state=state.filter(p=>p.id!==id);selected.delete(id);save();render();
+}
+function resetPoke(id){
+  cancelConfirm(id);
+  const p=state.find(x=>x.id===id);if(!p)return;
+  STATS.forEach(s=>p.ev[s]=0);save();render();
+}
+
+/* ── confirm / countdown logic ── */
+const COUNTDOWN=3; // seconds
+
+function cancelConfirm(id){
+  if(confirmState[id]){
+    clearInterval(confirmState[id].timer);
+    delete confirmState[id];
+  }
+}
+
+function startConfirm(id,action){
+  // if already confirming same action → execute
+  if(confirmState[id]&&confirmState[id].action===action){
+    if(action==='del') removePoke(id);
+    else resetPoke(id);
+    return;
+  }
+  // cancel any existing confirm (different action or same)
+  cancelConfirm(id);
+
+  let remaining=COUNTDOWN;
+  confirmState[id]={action,remaining,timer:null};
+
+  const tick=()=>{
+    remaining--;
+    if(confirmState[id]) confirmState[id].remaining=remaining;
+    if(remaining<=0){
+      cancelConfirm(id);
+      renderCardButtons(id); // revert button
+      return;
+    }
+    renderCardButtons(id);
+  };
+
+  confirmState[id].timer=setInterval(tick,1000);
+  renderCardButtons(id);
+}
+
+function renderCardButtons(id){
+  const cs=confirmState[id];
+  const card=document.querySelector(`[data-id="${id}"]`);
+  if(!card)return;
+  const btnRow=card.querySelector('.card-btns');
+  if(!btnRow)return;
+  btnRow.innerHTML='';
+
+  const canDelete=state.length>1;
+
+  // reset button
+  const rb=document.createElement('button');
+  rb.className='card-btn rst';
+  if(cs&&cs.action==='rst'){
+    rb.className='card-btn confirming-rst';
+    rb.textContent=`重置 ${cs.remaining}s`;
+  } else {
+    rb.textContent='↺ 重置';
+  }
+  rb.addEventListener('click',e=>{e.stopPropagation();startConfirm(id,'rst');});
+  btnRow.appendChild(rb);
+
+  // cancel button (if confirming)
+  if(cs){
+    const cb=document.createElement('button');
+    cb.className='card-btn';
+    cb.textContent='取消';
+    cb.style.cssText='color:var(--text3);';
+    cb.addEventListener('click',e=>{e.stopPropagation();cancelConfirm(id);renderCardButtons(id);});
+    btnRow.appendChild(cb);
+  }
+
+  // delete button
+  if(canDelete){
+    const db=document.createElement('button');
+    db.className='card-btn del';
+    if(cs&&cs.action==='del'){
+      db.className='card-btn confirming-del';
+      db.textContent=`刪除 ${cs.remaining}s`;
+    } else {
+      db.textContent='✕ 刪除';
+    }
+    db.addEventListener('click',e=>{e.stopPropagation();startConfirm(id,'del');});
+    btnRow.appendChild(db);
+  }
+}
+
+function applyDelta(sign){
+  if(selected.size===0){updateHint(true);return;}
+  for(const id of selected){
+    const p=state.find(x=>x.id===id);if(!p)continue;
+    const cur=p.ev[activeStat],rem=MAX_TOT-tot(p);
+    if(sign>0) p.ev[activeStat]=cur+Math.min(activeInc,MAX_STAT-cur,Math.max(0,rem));
+    else p.ev[activeStat]=Math.max(0,cur-activeInc);
+  }
+  save();render();
+}
+
+function updateHint(warn=false){
+  const h=document.getElementById('hint');
+  const sl=LABEL[activeStat];
+  if(warn){h.innerHTML='← 先點卡片選取寶可夢';return;}
+  if(selected.size===0) h.innerHTML=`<b>${sl}</b> ×${activeInc}　→ 點卡片選取`;
+  else{
+    const names=[...selected].map(id=>state.find(p=>p.id===id)?.name||'').join('、');
+    h.innerHTML=`<b>${sl}</b> ×${activeInc}　→ <b>${names}</b>`;
+  }
+}
+
+function render(){
+  document.querySelectorAll('.stat-btn').forEach(b=>b.classList.toggle('sel',b.dataset.s===activeStat));
+  updateHint();
+  const list=document.getElementById('poke-list');
+  list.innerHTML='';
+
+  for(const poke of state){
+    const t=tot(poke),isSel=selected.has(poke.id);
+    const card=document.createElement('div');
+    card.className='poke-card'+(isSel?' sel':'');
+    card.dataset.id=poke.id;
+    card.addEventListener('click',e=>{
+      if(e.target.classList.contains('poke-name')||e.target.closest('.card-btns'))return;
+      if(selected.has(poke.id))selected.delete(poke.id);else selected.add(poke.id);
+      render();
+    });
+
+    // header
+    const hdr=document.createElement('div');hdr.className='poke-hdr';
+    const dot=document.createElement('div');dot.className='sel-dot';hdr.appendChild(dot);
+    const ni=document.createElement('input');
+    ni.className='poke-name';ni.type='text';ni.value=poke.name;ni.maxLength=14;
+    ni.addEventListener('click',e=>e.stopPropagation());
+    ni.addEventListener('input',e=>{poke.name=e.target.value;save();updateHint();});
+    hdr.appendChild(ni);
+    const badge=document.createElement('div');
+    badge.className='ev-badge'+(t>=MAX_TOT?' full':t>=450?' warn':'');
+    badge.textContent=t+'/510';hdr.appendChild(badge);
+    const btnRow=document.createElement('div');btnRow.className='card-btns';
+    hdr.appendChild(btnRow);
+    card.appendChild(hdr);
+
+    // mini stats
+    const ms=document.createElement('div');ms.className='mini-stats';
+    for(const s of STATS){
+      const ev=poke.ev[s];
+      const col=document.createElement('div');
+      col.className='mstat'+(s===activeStat?' active':'');
+      col.innerHTML=`<div class="mstat-lbl" style="color:${COLORS[s]}">${LABEL[s]}</div><div class="mstat-val" style="color:${s===activeStat?COLORS[s]:'var(--text)'}">${ev}</div><div class="mstat-bar"><div class="mstat-fill" style="width:${ev/MAX_STAT*100}%;background:${COLORS[s]}"></div></div>`;
+      ms.appendChild(col);
+    }
+    card.appendChild(ms);
+    list.appendChild(card);
+    renderCardButtons(poke.id);
+  }
+
+  const add=document.createElement('button');add.className='add-btn';
+  add.innerHTML='<span style="font-size:20px;font-weight:200;line-height:1">+</span> 新增寶可夢';
+  add.addEventListener('click',()=>{
+    const p=addPoke();selected.clear();selected.add(p.id);render();
+    setTimeout(()=>{const ins=document.querySelectorAll('.poke-name');if(ins.length){ins[ins.length-1].focus();ins[ins.length-1].select();}},40);
+  });
+  list.appendChild(add);
+}
+
+document.querySelectorAll('.stat-btn').forEach(b=>{
+  b.addEventListener('click',()=>{activeStat=b.dataset.s;render();});
+});
+document.querySelectorAll('.inc-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    activeInc=Number(b.dataset.inc);
+    document.querySelectorAll('.inc-btn').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+    document.getElementById('inc-custom').value='';
+    updateHint();
+  });
+});
+document.getElementById('inc-custom').addEventListener('input',e=>{
+  const v=parseInt(e.target.value)||0;
+  if(v>0){activeInc=v;document.querySelectorAll('.inc-btn').forEach(x=>x.classList.remove('sel'));updateHint();}
+});
+document.getElementById('btn-plus').addEventListener('click',()=>applyDelta(1));
+document.getElementById('btn-minus').addEventListener('click',()=>applyDelta(-1));
+
+load();render();
+</script>
+</body>
+</html>
