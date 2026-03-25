@@ -32,11 +32,17 @@ body{
   padding:10px 12px;
   display:flex;flex-direction:column;gap:7px;
 }
-.stat-row{display:flex;gap:5px;}
+
+/* stat buttons — 2 rows of 3 */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+}
 .stat-btn{
-  flex:1;padding:9px 2px;border-radius:9px;border:2px solid transparent;
+  padding:11px 4px;border-radius:9px;border:2px solid transparent;
   background:var(--s2);color:var(--text2);
-  font-size:11px;font-weight:700;letter-spacing:.3px;
+  font-size:13px;font-weight:700;letter-spacing:.5px;
   cursor:pointer;touch-action:manipulation;transition:all .12s;
 }
 .stat-btn[data-s="hp"].sel  {background:var(--hp);  border-color:var(--hp);  color:#fff;}
@@ -45,6 +51,8 @@ body{
 .stat-btn[data-s="spa"].sel {background:var(--spa); border-color:var(--spa); color:#fff;}
 .stat-btn[data-s="spd"].sel {background:var(--spd); border-color:var(--spd); color:#0a2010;}
 .stat-btn[data-s="spe"].sel {background:var(--spe); border-color:var(--spe); color:#fff;}
+
+/* inc row */
 .inc-row{display:flex;gap:5px;}
 .inc-btn{
   flex:1;padding:9px 2px;border-radius:9px;
@@ -62,6 +70,8 @@ body{
 }
 .inc-custom:focus{border-color:var(--accent);}
 .inc-custom::placeholder{color:var(--text3);font-size:11px;font-weight:400;}
+
+/* big +/- */
 .big-row{display:flex;gap:8px;}
 .big-btn{
   flex:1;border:none;border-radius:12px;
@@ -73,36 +83,34 @@ body{
 .big-btn:active{transform:scale(0.94);}
 .big-plus{background:#c0392b;color:#fff;}
 .big-minus{background:var(--s2);color:var(--text2);}
+
 .hint{font-size:11px;color:var(--text3);text-align:center;}
 .hint b{color:var(--accent);font-weight:500;}
 
 /* ── QUICK REPEAT ── */
-.quick-section{padding:0 12px 2px;}
-.quick-label{font-size:10px;color:var(--text3);margin-bottom:5px;letter-spacing:.3px;}
+.quick-section{padding:0 12px 4px;}
+.quick-label{font-size:10px;color:var(--text3);margin-bottom:5px;letter-spacing:.4px;}
 .quick-row{display:flex;gap:6px;}
 .quick-btn{
   flex:1;background:var(--s2);border:1px solid var(--border);
-  border-radius:9px;padding:9px 8px;
+  border-radius:9px;padding:9px 10px;
   cursor:pointer;touch-action:manipulation;
   text-align:left;font-family:inherit;
-  transition:border-color .12s, background .12s;
-  min-width:0;
+  transition:border-color .12s,background .12s;min-width:0;
 }
 .quick-btn:active{background:rgba(79,142,247,0.12);border-color:var(--accent);}
-.quick-btn:disabled{opacity:0.3;cursor:default;}
 .quick-top{
-  font-size:11px;font-weight:700;color:var(--text);
+  font-size:12px;font-weight:700;color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  margin-bottom:2px;
+  margin-bottom:2px;display:flex;align-items:center;gap:5px;
 }
 .quick-sub{
   font-size:10px;color:var(--text2);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.quick-badge{
-  display:inline-block;font-size:9px;font-weight:700;
-  padding:1px 5px;border-radius:4px;margin-right:3px;
-  vertical-align:middle;
+.q-badge{
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:5px;flex-shrink:0;
 }
 
 /* ── POKEMON LIST ── */
@@ -139,14 +147,14 @@ body{
   background:var(--s2);border:1px solid var(--border);
   color:var(--text2);border-radius:7px;
   font-size:13px;cursor:pointer;
-  padding:5px 12px;
-  touch-action:manipulation;line-height:1;
-  font-family:inherit;font-weight:600;
+  padding:5px 12px;touch-action:manipulation;
+  line-height:1;font-family:inherit;font-weight:600;
   transition:all .15s;white-space:nowrap;
 }
 .confirming-rst{background:rgba(79,142,247,0.15);border-color:var(--accent);color:var(--accent);animation:pulse .8s ease infinite;}
 .confirming-del{background:rgba(224,85,85,0.15);border-color:var(--hp);color:var(--hp);animation:pulse .8s ease infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+
 .mini-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
 .mstat{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .mstat-lbl{font-size:9px;font-weight:700;letter-spacing:.3px;}
@@ -154,6 +162,7 @@ body{
 .mstat-bar{width:100%;height:4px;background:var(--s2);border-radius:2px;overflow:hidden;}
 .mstat-fill{height:100%;border-radius:2px;transition:width .2s;}
 .mstat:not(.active){opacity:.5;}
+
 .add-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:14px;border-radius:12px;
@@ -166,29 +175,23 @@ body{
 /* ── LOG ── */
 .log-section{
   margin:10px 12px 36px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden;
 }
 .log-header{
   display:flex;align-items:center;justify-content:space-between;
-  padding:9px 13px;
-  border-bottom:1px solid var(--border);
-  background:var(--s1);
+  padding:9px 13px;border-bottom:1px solid var(--border);background:var(--s1);
 }
 .log-title{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;}
 .log-clear{
   background:none;border:none;color:var(--text3);
-  font-size:11px;cursor:pointer;font-family:inherit;
-  padding:2px 4px;touch-action:manipulation;
+  font-size:11px;cursor:pointer;font-family:inherit;padding:2px 4px;
 }
 .log-clear:active{color:var(--hp);}
 .log-body{background:var(--s1);}
 .log-empty{padding:14px;text-align:center;font-size:12px;color:var(--text3);}
 .log-item{
   display:flex;align-items:baseline;gap:8px;
-  padding:9px 13px;
-  border-bottom:1px solid var(--border);
+  padding:9px 13px;border-bottom:1px solid var(--border);
 }
 .log-item:last-child{border-bottom:none;}
 .log-time{font-size:10px;color:var(--text3);flex-shrink:0;letter-spacing:.3px;}
@@ -196,15 +199,15 @@ body{
 .log-text b{color:var(--text);font-weight:600;}
 .log-stat-badge{
   font-size:10px;font-weight:700;
-  padding:1px 6px;border-radius:4px;
-  display:inline-block;vertical-align:middle;
+  padding:1px 6px;border-radius:4px;display:inline-block;vertical-align:middle;
 }
 </style>
 </head>
 <body>
 
 <div class="controls">
-  <div class="stat-row">
+  <!-- 2-row stat grid -->
+  <div class="stat-grid">
     <button class="stat-btn sel" data-s="hp">HP</button>
     <button class="stat-btn" data-s="atk">ATK</button>
     <button class="stat-btn" data-s="def">DEF</button>
@@ -227,7 +230,6 @@ body{
   <div class="hint" id="hint">點卡片選取寶可夢，再按 + / −</div>
 </div>
 
-<!-- quick repeat -->
 <div class="quick-section" id="quick-section" style="display:none">
   <div class="quick-label">QUICK REPEAT</div>
   <div class="quick-row" id="quick-row"></div>
@@ -248,32 +250,40 @@ body{
 <script>
 const STATS=['hp','atk','def','spa','spd','spe'];
 const LABEL={hp:'HP',atk:'ATK',def:'DEF',spa:'SpA',spd:'SpD',spe:'SPE'};
-const STATCOLOR={hp:'var(--hp)',atk:'var(--atk)',def:'var(--def)',spa:'var(--spa)',spd:'var(--spd)',spe:'var(--spe)'};
-const STATBG={hp:'rgba(224,85,85,.18)',atk:'rgba(245,146,78,.18)',def:'rgba(212,184,58,.18)',spa:'rgba(91,155,245,.18)',spd:'rgba(91,207,138,.18)',spe:'rgba(217,107,207,.18)'};
-const MAX_STAT=252,MAX_TOT=510,LS='pkev6';
+const SCOLOR={hp:'var(--hp)',atk:'var(--atk)',def:'var(--def)',spa:'var(--spa)',spd:'var(--spd)',spe:'var(--spe)'};
+const SBG={hp:'rgba(224,85,85,.2)',atk:'rgba(245,146,78,.2)',def:'rgba(212,184,58,.2)',spa:'rgba(91,155,245,.2)',spd:'rgba(91,207,138,.2)',spe:'rgba(217,107,207,.2)'};
+const MAX_STAT=252,MAX_TOT=510,LS='pkev_data';
+const OLD_KEYS=['pkev7','pkev6','pkev5','pkev4','pkev3','pkev2'];
 let nextId=0,state=[],selected=new Set();
 let activeStat='hp',activeInc=1;
-let opHistory=[]; // last 2 ops: {stat, inc, sign, ids, names, time}
-let opLog=[];     // full log: {time, text}
+let opHistory=[];
+let opLog=[];
 const confirmState={};
 
 function save(){localStorage.setItem(LS,JSON.stringify({nextId,state,opHistory,opLog}));}
 function load(){
+  // try current key first
   try{
     const d=JSON.parse(localStorage.getItem(LS)||'null');
-    if(d){
-      nextId=d.nextId||0;
-      state=d.state||[];
-      opHistory=d.opHistory||[];
-      opLog=d.opLog||[];
-      if(state.length) return;
+    if(d&&d.state&&d.state.length){
+      nextId=d.nextId||0;state=d.state;opHistory=d.opHistory||[];opLog=d.opLog||[];return;
     }
   }catch(e){}
+  // migrate from any old key
+  for(const key of OLD_KEYS){
+    try{
+      const d=JSON.parse(localStorage.getItem(key)||'null');
+      if(d&&d.state&&d.state.length){
+        nextId=d.nextId||0;state=d.state;opHistory=d.opHistory||[];opLog=d.opLog||[];
+        save(); // write to new key
+        localStorage.removeItem(key); // clean up old key
+        return;
+      }
+    }catch(e){}
+  }
   addPoke(false);
 }
-
 function tot(p){return STATS.reduce((a,s)=>a+p.ev[s],0);}
-
 function addPoke(doSave=true){
   const p={id:nextId++,name:'寶可夢',ev:{hp:0,atk:0,def:0,spa:0,spd:0,spe:0}};
   state.push(p);if(doSave){save();render();}return p;
@@ -281,10 +291,7 @@ function addPoke(doSave=true){
 function removePoke(id){
   if(state.length<=1)return;
   cancelConfirm(id);
-  state=state.filter(p=>p.id!==id);
-  selected.delete(id);
-  // clean opHistory refs
-  opHistory=opHistory.filter(op=>op.ids.some(i=>state.find(p=>p.id===i)));
+  state=state.filter(p=>p.id!==id);selected.delete(id);
   save();render();
 }
 function resetPoke(id){
@@ -294,7 +301,7 @@ function resetPoke(id){
   STATS.forEach(s=>p.ev[s]=0);save();render();
 }
 
-/* ── confirm countdown ── */
+/* confirm */
 const COUNTDOWN=3;
 function cancelConfirm(id){
   if(confirmState[id]){clearInterval(confirmState[id].timer);delete confirmState[id];}
@@ -306,42 +313,41 @@ function startConfirm(id,action){
   cancelConfirm(id);
   let remaining=COUNTDOWN;
   confirmState[id]={action,remaining,timer:null};
-  const tick=()=>{
+  confirmState[id].timer=setInterval(()=>{
     remaining--;
     if(confirmState[id])confirmState[id].remaining=remaining;
     if(remaining<=0){cancelConfirm(id);renderCardButtons(id);return;}
     renderCardButtons(id);
-  };
-  confirmState[id].timer=setInterval(tick,1000);
+  },1000);
   renderCardButtons(id);
 }
 function renderCardButtons(id){
   const cs=confirmState[id];
   const card=document.querySelector(`[data-id="${id}"]`);
   if(!card)return;
-  const btnRow=card.querySelector('.card-btns');if(!btnRow)return;
-  btnRow.innerHTML='';
-  const rb=document.createElement('button');rb.className='card-btn rst';
-  rb.className='card-btn'+(cs&&cs.action==='rst'?' confirming-rst':' rst');
+  const br=card.querySelector('.card-btns');if(!br)return;
+  br.innerHTML='';
+  const rb=document.createElement('button');
+  rb.className='card-btn'+(cs&&cs.action==='rst'?' confirming-rst':'');
   rb.textContent=cs&&cs.action==='rst'?`重置 ${cs.remaining}s`:'↺ 重置';
   rb.addEventListener('click',e=>{e.stopPropagation();startConfirm(id,'rst');});
-  btnRow.appendChild(rb);
+  br.appendChild(rb);
   if(cs){
     const cb=document.createElement('button');cb.className='card-btn';
     cb.textContent='取消';cb.style.color='var(--text3)';
     cb.addEventListener('click',e=>{e.stopPropagation();cancelConfirm(id);renderCardButtons(id);});
-    btnRow.appendChild(cb);
+    br.appendChild(cb);
   }
   if(state.length>1){
     const db=document.createElement('button');
-    db.className='card-btn'+(cs&&cs.action==='del'?' confirming-del':' del');
+    db.className='card-btn'+(cs&&cs.action==='del'?' confirming-del':'');
     db.textContent=cs&&cs.action==='del'?`刪除 ${cs.remaining}s`:'✕ 刪除';
     db.addEventListener('click',e=>{e.stopPropagation();startConfirm(id,'del');});
-    btnRow.appendChild(db);
+    br.appendChild(db);
   }
 }
 
-/* ── log ── */
+/* log */
 function nowStr(){
   const d=new Date();
   return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
@@ -352,87 +358,85 @@ function addLog(text){
 }
 function renderLog(){
   const body=document.getElementById('log-body');
-  if(opLog.length===0){body.innerHTML='<div class="log-empty">尚無紀錄</div>';return;}
+  if(!opLog.length){body.innerHTML='<div class="log-empty">尚無紀錄</div>';return;}
   body.innerHTML='';
-  for(const entry of opLog){
+  for(const e of opLog){
     const item=document.createElement('div');item.className='log-item';
-    const t=document.createElement('div');t.className='log-time';t.textContent=entry.time;
-    const tx=document.createElement('div');tx.className='log-text';tx.innerHTML=entry.text;
-    item.appendChild(t);item.appendChild(tx);
-    body.appendChild(item);
+    const t=document.createElement('div');t.className='log-time';t.textContent=e.time;
+    const tx=document.createElement('div');tx.className='log-text';tx.innerHTML=e.text;
+    item.appendChild(t);item.appendChild(tx);body.appendChild(item);
   }
 }
 
-/* ── quick repeat ── */
+/* ── quick repeat — key fix: only push if different from top ── */
+function opKey(op){return `${op.stat}|${op.inc}|${op.sign}|${op.ids.slice().sort().join(',')}`;}
 function pushOp(op){
+  // If identical to the most recent op → don't update history at all
+  if(opHistory.length>0&&opKey(op)===opKey(opHistory[0]))return;
   opHistory.unshift(op);
   if(opHistory.length>2)opHistory.length=2;
 }
+
 function renderQuick(){
   const section=document.getElementById('quick-section');
   const row=document.getElementById('quick-row');
-  if(opHistory.length===0){section.style.display='none';return;}
+  if(!opHistory.length){section.style.display='none';return;}
   section.style.display='block';
   row.innerHTML='';
   for(const op of opHistory){
     const btn=document.createElement('button');btn.className='quick-btn';
     const sign=op.sign>0?'+':'−';
-    const names=op.names.join('、');
-    const statColor=STATCOLOR[op.stat];
-    const statBg=STATBG[op.stat];
     btn.innerHTML=`
       <div class="quick-top">
-        <span class="quick-badge" style="background:${statBg};color:${statColor}">${LABEL[op.stat]}</span>
+        <span class="q-badge" style="background:${SBG[op.stat]};color:${SCOLOR[op.stat]}">${LABEL[op.stat]}</span>
         ${sign}${op.inc}
       </div>
-      <div class="quick-sub">${names}</div>`;
+      <div class="quick-sub">${op.names.join('、')}</div>`;
     btn.addEventListener('click',()=>replayOp(op));
     row.appendChild(btn);
   }
 }
 
 function replayOp(op){
-  // find still-existing pokemon
   const targets=op.ids.filter(id=>state.find(p=>p.id===id));
-  if(targets.length===0)return;
+  if(!targets.length)return;
   const affected=[];
   for(const id of targets){
     const p=state.find(x=>x.id===id);if(!p)continue;
     const cur=p.ev[op.stat],rem=MAX_TOT-tot(p);
-    let before=cur;
+    const before=cur;
     if(op.sign>0) p.ev[op.stat]=cur+Math.min(op.inc,MAX_STAT-cur,Math.max(0,rem));
     else p.ev[op.stat]=Math.max(0,cur-op.inc);
-    if(p.ev[op.stat]!==before) affected.push(p.name);
+    if(p.ev[op.stat]!==before)affected.push(p.name);
   }
-  if(affected.length>0){
+  if(affected.length){
     const sign=op.sign>0?'+':'−';
-    const logText=`<span class="log-stat-badge" style="background:${STATBG[op.stat]};color:${STATCOLOR[op.stat]}">${LABEL[op.stat]}</span> ${sign}${op.inc}　<b>${affected.join('、')}</b>　<span style="color:var(--text3)">(repeat)</span>`;
-    addLog(logText);
-    // refresh op in history
-    pushOp({...op,ids:targets,names:targets.map(id=>state.find(p=>p.id===id)?.name||'')});
+    addLog(`<span class="log-stat-badge" style="background:${SBG[op.stat]};color:${SCOLOR[op.stat]}">${LABEL[op.stat]}</span> ${sign}${op.inc}　<b>${affected.join('、')}</b>　<span style="color:var(--text3)">(repeat)</span>`);
+    // replay counts as a new op — but same key so pushOp won't duplicate
+    const newOp={...op,ids:targets,names:targets.map(id=>state.find(p=>p.id===id)?.name||'')};
+    pushOp(newOp);
   }
   save();render();
 }
 
-/* ── apply delta ── */
+/* apply delta */
 function applyDelta(sign){
-  if(selected.size===0){updateHint(true);return;}
+  if(!selected.size){updateHint(true);return;}
   const targets=[...selected];
   const affected=[];
   for(const id of targets){
     const p=state.find(x=>x.id===id);if(!p)continue;
     const cur=p.ev[activeStat],rem=MAX_TOT-tot(p);
-    let before=cur;
+    const before=cur;
     if(sign>0) p.ev[activeStat]=cur+Math.min(activeInc,MAX_STAT-cur,Math.max(0,rem));
     else p.ev[activeStat]=Math.max(0,cur-activeInc);
-    if(p.ev[activeStat]!==before) affected.push({id,name:p.name});
+    if(p.ev[activeStat]!==before)affected.push({id,name:p.name});
   }
-  if(affected.length>0){
+  if(affected.length){
     const names=affected.map(a=>a.name);
     const ids=affected.map(a=>a.id);
-    const signStr=sign>0?'+':'−';
-    const logText=`<span class="log-stat-badge" style="background:${STATBG[activeStat]};color:${STATCOLOR[activeStat]}">${LABEL[activeStat]}</span> ${signStr}${activeInc}　<b>${names.join('、')}</b>`;
-    addLog(logText);
+    const sign2=sign>0?'+':'−';
+    addLog(`<span class="log-stat-badge" style="background:${SBG[activeStat]};color:${SCOLOR[activeStat]}">${LABEL[activeStat]}</span> ${sign2}${activeInc}　<b>${names.join('、')}</b>`);
     pushOp({stat:activeStat,inc:activeInc,sign,ids,names});
   }
   save();render();
@@ -442,7 +446,7 @@ function updateHint(warn=false){
   const h=document.getElementById('hint');
   const sl=LABEL[activeStat];
   if(warn){h.innerHTML='← 先點卡片選取寶可夢';return;}
-  if(selected.size===0) h.innerHTML=`<b>${sl}</b> ×${activeInc}　→ 點卡片選取`;
+  if(!selected.size) h.innerHTML=`<b>${sl}</b> ×${activeInc}　→ 點卡片選取`;
   else{
     const names=[...selected].map(id=>state.find(p=>p.id===id)?.name||'').join('、');
     h.innerHTML=`<b>${sl}</b> ×${activeInc}　→ <b>${names}</b>`;
@@ -451,16 +455,12 @@ function updateHint(warn=false){
 
 function render(){
   document.querySelectorAll('.stat-btn').forEach(b=>b.classList.toggle('sel',b.dataset.s===activeStat));
-  updateHint();
-  renderQuick();
-  renderLog();
-
+  updateHint();renderQuick();renderLog();
   const list=document.getElementById('poke-list');list.innerHTML='';
   for(const poke of state){
     const t=tot(poke),isSel=selected.has(poke.id);
     const card=document.createElement('div');
-    card.className='poke-card'+(isSel?' sel':'');
-    card.dataset.id=poke.id;
+    card.className='poke-card'+(isSel?' sel':'');card.dataset.id=poke.id;
     card.addEventListener('click',e=>{
       if(e.target.classList.contains('poke-name')||e.target.closest('.card-btns'))return;
       if(selected.has(poke.id))selected.delete(poke.id);else selected.add(poke.id);
@@ -476,14 +476,13 @@ function render(){
     const badge=document.createElement('div');
     badge.className='ev-badge'+(t>=MAX_TOT?' full':t>=450?' warn':'');
     badge.textContent=t+'/510';hdr.appendChild(badge);
-    const btnRow=document.createElement('div');btnRow.className='card-btns';
-    hdr.appendChild(btnRow);card.appendChild(hdr);
+    const br=document.createElement('div');br.className='card-btns';hdr.appendChild(br);
+    card.appendChild(hdr);
     const ms=document.createElement('div');ms.className='mini-stats';
     for(const s of STATS){
       const ev=poke.ev[s];
-      const col=document.createElement('div');
-      col.className='mstat'+(s===activeStat?' active':'');
-      col.innerHTML=`<div class="mstat-lbl" style="color:${STATCOLOR[s]}">${LABEL[s]}</div><div class="mstat-val" style="color:${s===activeStat?STATCOLOR[s]:'var(--text)'}">${ev}</div><div class="mstat-bar"><div class="mstat-fill" style="width:${ev/MAX_STAT*100}%;background:${STATCOLOR[s]}"></div></div>`;
+      const col=document.createElement('div');col.className='mstat'+(s===activeStat?' active':'');
+      col.innerHTML=`<div class="mstat-lbl" style="color:${SCOLOR[s]}">${LABEL[s]}</div><div class="mstat-val" style="color:${s===activeStat?SCOLOR[s]:'var(--text)'}">${ev}</div><div class="mstat-bar"><div class="mstat-fill" style="width:${ev/MAX_STAT*100}%;background:${SCOLOR[s]}"></div></div>`;
       ms.appendChild(col);
     }
     card.appendChild(ms);list.appendChild(card);
@@ -498,7 +497,6 @@ function render(){
   list.appendChild(add);
 }
 
-/* ── bindings ── */
 document.querySelectorAll('.stat-btn').forEach(b=>{
   b.addEventListener('click',()=>{activeStat=b.dataset.s;render();});
 });
@@ -506,9 +504,7 @@ document.querySelectorAll('.inc-btn').forEach(b=>{
   b.addEventListener('click',()=>{
     activeInc=Number(b.dataset.inc);
     document.querySelectorAll('.inc-btn').forEach(x=>x.classList.remove('sel'));
-    b.classList.add('sel');
-    document.getElementById('inc-custom').value='';
-    updateHint();
+    b.classList.add('sel');document.getElementById('inc-custom').value='';updateHint();
   });
 });
 document.getElementById('inc-custom').addEventListener('input',e=>{
@@ -517,9 +513,7 @@ document.getElementById('inc-custom').addEventListener('input',e=>{
 });
 document.getElementById('btn-plus').addEventListener('click',()=>applyDelta(1));
 document.getElementById('btn-minus').addEventListener('click',()=>applyDelta(-1));
-document.getElementById('log-clear').addEventListener('click',()=>{
-  opLog=[];save();renderLog();
-});
+document.getElementById('log-clear').addEventListener('click',()=>{opLog=[];save();renderLog();});
 
 load();render();
 </script>
